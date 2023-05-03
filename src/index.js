@@ -2,24 +2,47 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const pgConnect = require("./pgConnection");
-const EventEmitter=require("events")
+const EventEmitter = require("events");
+const { readSync, readFileSync } = require("fs");
+const path = require("path");
 app.use(cors());
 app.use(express.json());
 
-const customEmitter= new EventEmitter()
+const customEmitter = new EventEmitter();
+// const home=readFileSync("./home.html")
+
+// adding static asset
+
+app.use(express.static("src/public"))
 
 
 
-customEmitter.on("response",()=>{
-  console.log("my response emmitter");
-})
+app.get("/", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "./home.html"));
+});
 
-customEmitter.on("callOut",(name,age)=>{
-console.log("My name is "+name+" and I am "+age+" years old");
-})
 
-customEmitter.emit("response")
-customEmitter.emit("callOut","gideon",20)
+app.get("/about", (req, res) => {
+  res.send("About page");
+});
+app.all("*", (req, res) => {
+  res.status(404).send("<h1> Page not found</h1>");
+});
+// customEmitter.on("response", () => {
+//   console.log("my response emmitter");
+// });
+
+// customEmitter.on("callOut", (name, age) => {
+//   console.log("My name is " + name + " and I am " + age + " years old");
+// });
+
+// customEmitter.emit("response");
+// customEmitter.emit("callOut", "gideon", 20);
+
+// app.get("/style.css", (req, res) => {
+//   res.sendFile(path.resolve(__dirname, "./style.css"));
+// });
+
 // console.log("first task");
 // setTimeout(()=>{
 //   console.log("second task");
@@ -30,13 +53,11 @@ customEmitter.emit("callOut","gideon",20)
 // console.log("third task");
 // console.log("third task");
 
-
 // setInterval(()=>{
 // console.log("second");
 // },2000)
 
 // console.log("I will run first");
-
 
 // app.get("/", async(req, res) => {
 // try {
@@ -46,7 +67,7 @@ customEmitter.emit("callOut","gideon",20)
 
 // } catch (error) {
 //     console.log(error.message);
-// }   
+// }
 // });
 
 // pgConnect.connect((err) => {
@@ -55,10 +76,6 @@ customEmitter.emit("callOut","gideon",20)
 //     : console.log("connection failed");
 // });
 
-
-
-
-
-app.listen("5000", () => {
-  console.log("server connected and listening on port 5000");
+app.listen("3000", () => {
+  console.log("server connected and listening on port 3000");
 });
