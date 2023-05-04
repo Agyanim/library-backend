@@ -5,6 +5,7 @@ const pgConnect = require("./pgConnection");
 const EventEmitter = require("events");
 const { readSync, readFileSync } = require("fs");
 const path = require("path");
+const { log } = require("console");
 app.use(cors());
 app.use(express.json());
 
@@ -16,10 +17,30 @@ const customEmitter = new EventEmitter();
 app.use(express.static("src/public"))
 
 
+// Api
 
-app.get("/", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "./home.html"));
-});
+app.get("/api/names",((req,res)=>{
+  res.status(200).json({status:"successful"})
+}))
+
+// using params
+app.get("/api/names/:id",(req,res)=>{
+  console.log(req.params);
+const {id}=(req.params);
+console.log(id);
+  res.status(200).json({status:"successful"})
+})
+
+// using queries
+
+app.get("/api/products/search",(req,res)=>{
+  console.log(req.query);
+  res.json({status:"successful"})
+})
+
+// app.get("/", (req, res) => {
+//   res.sendFile(path.resolve(__dirname, "./home.html"));
+// });
 
 
 app.get("/about", (req, res) => {
