@@ -6,6 +6,10 @@ const EventEmitter = require("events");
 const { readSync, readFileSync } = require("fs");
 const path = require("path");
 const { log } = require("console");
+const logger=require("./logger")
+
+
+
 app.use(cors());
 app.use(express.json());
 
@@ -17,26 +21,55 @@ const customEmitter = new EventEmitter();
 app.use(express.static("src/public"))
 
 
+
+// middleware
+app.get("/logger",logger,(req,res)=>{
+  res.status(200).json({success:true,data:"api with middleware"})
+})
+
 // Api
+
+let student=[]
 
 app.get("/api/names",((req,res)=>{
   res.status(200).json({status:"successful"})
 }))
 
-// using params
-app.get("/api/names/:id",(req,res)=>{
-  console.log(req.params);
-const {id}=(req.params);
-console.log(id);
-  res.status(200).json({status:"successful"})
+// post method
+app.post("/api/names",(req,res)=>{
+  const {name}=req.body
+  if (name){
+
+    student.push(name)
+    return   res.status(200).json({success:true,data:student})
+
+  }
+  return res.status(200).json("Sorry, you did not put in the write information")
 })
+
+// put method
+app.put("/api/names/:id",(req,res)=>{
+  const {id}=req.params
+  const {name}=req.body
+  console.log(`id:${id} name:${name}`);
+  res.status(200).json("update was successful")
+})
+
+
+// using params
+// app.get("/api/names/:id",(req,res)=>{
+//   console.log(req.params);
+// const {id}=(req.params);
+// console.log(id);
+//   res.status(200).json({status:"successful"})
+// })
 
 // using queries
 
-app.get("/api/products/search",(req,res)=>{
-  console.log(req.query);
-  res.json({status:"successful"})
-})
+// app.get("/api/products/search",(req,res)=>{
+//   console.log(req.query);
+//   res.json({status:"successful"})
+// })
 
 // app.get("/", (req, res) => {
 //   res.sendFile(path.resolve(__dirname, "./home.html"));
